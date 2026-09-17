@@ -21,16 +21,16 @@ export default function LoadingState({ message = 'Researching archive...' }) {
   const CurrentIcon = STAGES[stageIndex].icon;
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-12 text-center shadow-subtle space-y-4">
-      <div className="w-12 h-12 mx-auto rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-800">
+    <div className="bg-zinc-900 rounded-lg border border-zinc-800 p-12 text-center shadow-xl space-y-4 text-zinc-100">
+      <div className="w-12 h-12 mx-auto rounded-full bg-red-950/80 border border-red-900/60 flex items-center justify-center text-red-400 shadow-md shadow-red-950/50">
         <CurrentIcon className="w-6 h-6 animate-pulse" />
       </div>
 
       <div className="space-y-1.5 max-w-sm mx-auto">
-        <h4 className="text-sm font-bold text-slate-900">
+        <h4 className="text-sm font-bold text-white">
           {message}
         </h4>
-        <p className="text-xs text-slate-500 font-mono transition-all">
+        <p className="text-xs text-zinc-400 font-mono transition-all">
           {STAGES[stageIndex].text}
         </p>
       </div>
@@ -40,7 +40,7 @@ export default function LoadingState({ message = 'Researching archive...' }) {
           <div
             key={i}
             className={`w-2 h-2 rounded-full transition-all ${
-              i === stageIndex ? 'bg-brand-800 w-5' : 'bg-slate-200'
+              i === stageIndex ? 'bg-red-500 w-5 shadow-red-glow' : 'bg-zinc-800'
             }`}
           />
         ))}

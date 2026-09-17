@@ -93,7 +93,7 @@ export default function Documents() {
   };
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16 bg-zinc-950 text-zinc-100 min-h-full">
       <Header
         title="Archive Documents"
         subtitle="Catalogue of indexed articles, interview recordings, transcripts, and footage logs."
@@ -102,9 +102,9 @@ export default function Documents() {
             <button
               onClick={handleReindex}
               disabled={reindexing}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-800 bg-zinc-900 hover:bg-zinc-850 hover:border-red-900/60 text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${reindexing ? 'animate-spin text-brand-800' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${reindexing ? 'animate-spin text-red-500' : ''}`} />
               <span>{reindexing ? 'Rebuilding Index...' : 'Rebuild FAISS Index'}</span>
             </button>
           </div>
@@ -115,32 +115,32 @@ export default function Documents() {
         {notification && (
           <div className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
             notification.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-rose-50 border-rose-200 text-rose-800'
+              ? 'bg-emerald-950/60 border-emerald-800 text-emerald-200'
+              : 'bg-red-950/60 border-red-800 text-red-200'
           }`}>
             <span>{notification.text}</span>
-            <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-slate-600">×</button>
+            <button onClick={() => setNotification(null)} className="text-zinc-400 hover:text-white">×</button>
           </div>
         )}
 
         {/* Filter and Search Bar */}
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-subtle flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-zinc-900/90 p-4 rounded-lg border border-zinc-800 shadow-xl flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 min-w-[280px]">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-red-500 absolute left-3 top-2.5" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search archive document catalogue..."
-                className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-brand-800"
+                className="w-full pl-9 pr-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded text-xs text-white placeholder-zinc-500 focus:bg-zinc-950 focus:outline-none focus:border-red-600"
               />
             </div>
 
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-brand-800"
+              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-red-600"
             >
               <option value="">All Document Types</option>
               <option value="article">Articles</option>
@@ -152,7 +152,7 @@ export default function Documents() {
 
           <button
             onClick={() => navigate('/documents/upload')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-800 text-white rounded text-xs font-semibold hover:bg-brand-700 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold transition-colors cursor-pointer shadow-md shadow-red-950"
           >
             <PlusCircle className="w-3.5 h-3.5" />
             <span>Upload New File</span>
@@ -162,11 +162,11 @@ export default function Documents() {
         {/* Documents Table & Detail Split View */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Documents Table */}
-          <div className={`${selectedDoc ? 'lg:col-span-7' : 'lg:col-span-12'} bg-white rounded-lg border border-slate-200 shadow-subtle overflow-hidden transition-all`}>
+          <div className={`${selectedDoc ? 'lg:col-span-7' : 'lg:col-span-12'} bg-zinc-900/90 rounded-lg border border-zinc-800 shadow-xl overflow-hidden transition-all`}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <tr className="border-b border-zinc-800 bg-zinc-950 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                     <th className="py-3 px-4">Title & Details</th>
                     <th className="py-3 px-3">Type</th>
                     <th className="py-3 px-3">Publication</th>
@@ -175,16 +175,16 @@ export default function Documents() {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody className="divide-y divide-zinc-800/80 text-xs text-zinc-300">
                   {loading ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
+                      <td colSpan={6} className="py-12 text-center text-zinc-500">
                         Loading documents...
                       </td>
                     </tr>
                   ) : documents.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
+                      <td colSpan={6} className="py-12 text-center text-zinc-500">
                         No archive documents found matching your filter.
                       </td>
                     </tr>
@@ -194,43 +194,43 @@ export default function Documents() {
                       return (
                         <tr
                           key={doc.id}
-                          className={`hover:bg-slate-50/80 transition-colors cursor-pointer ${
-                            isSelected ? 'bg-brand-50/50 font-medium' : ''
+                          className={`hover:bg-zinc-800/60 transition-colors cursor-pointer ${
+                            isSelected ? 'bg-red-950/30 border-l-2 border-red-600 font-medium' : ''
                           }`}
                           onClick={() => handleViewChunks(doc)}
                         >
                           <td className="py-3 px-4 max-w-[280px]">
-                            <div className="font-semibold text-slate-900 line-clamp-1">{doc.title}</div>
+                            <div className="font-semibold text-white line-clamp-1">{doc.title}</div>
                             {doc.author && (
-                              <div className="text-[11px] text-slate-500 truncate">By {doc.author}</div>
+                              <div className="text-[11px] text-zinc-400 truncate">By {doc.author}</div>
                             )}
                           </td>
                           <td className="py-3 px-3 whitespace-nowrap">
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-950 text-zinc-300 border border-zinc-800">
                               {formatSourceType(doc.source_type)}
                             </span>
                           </td>
-                          <td className="py-3 px-3 whitespace-nowrap text-slate-600">
+                          <td className="py-3 px-3 whitespace-nowrap text-zinc-400">
                             {doc.publication || 'Archive'}
                           </td>
-                          <td className="py-3 px-3 whitespace-nowrap font-mono text-slate-500">
+                          <td className="py-3 px-3 whitespace-nowrap font-mono text-zinc-400">
                             {formatDate(doc.publication_date)}
                           </td>
-                          <td className="py-3 px-3 text-center font-mono text-slate-600">
+                          <td className="py-3 px-3 text-center font-mono text-zinc-300">
                             {doc.chunk_count || 1}
                           </td>
                           <td className="py-3 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => handleViewChunks(doc)}
-                                className="p-1 rounded text-slate-500 hover:text-brand-800 hover:bg-slate-100 transition-colors cursor-pointer"
+                                className="p-1 rounded text-zinc-400 hover:text-red-400 hover:bg-zinc-800 transition-colors cursor-pointer"
                                 title="Inspect Chunks"
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDelete(doc.id, doc.title)}
-                                className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                                className="p-1 rounded text-zinc-400 hover:text-red-400 hover:bg-red-950/50 transition-colors cursor-pointer"
                                 title="Delete Document"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -248,26 +248,26 @@ export default function Documents() {
 
           {/* Document Chunks Inspector Panel */}
           {selectedDoc && (
-            <div className="lg:col-span-5 bg-white rounded-lg border border-slate-200 shadow-subtle p-5 space-y-4 max-h-[750px] overflow-y-auto">
-              <div className="flex items-start justify-between border-b border-slate-200 pb-3">
+            <div className="lg:col-span-5 bg-zinc-900 rounded-lg border border-zinc-800 shadow-xl p-5 space-y-4 max-h-[750px] overflow-y-auto text-zinc-100">
+              <div className="flex items-start justify-between border-b border-zinc-800 pb-3">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-brand-800">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
                     Document Chunks ({docChunks.length})
                   </span>
-                  <h4 className="text-sm font-bold text-slate-900 line-clamp-1">
+                  <h4 className="text-sm font-bold text-white line-clamp-1">
                     {selectedDoc.title}
                   </h4>
                 </div>
                 <button
                   onClick={() => setSelectedDoc(null)}
-                  className="text-slate-400 hover:text-slate-600 text-sm font-mono"
+                  className="text-zinc-400 hover:text-white text-sm font-mono"
                 >
                   ×
                 </button>
               </div>
 
               {loadingChunks ? (
-                <div className="py-12 text-center text-xs text-slate-500">
+                <div className="py-12 text-center text-xs text-zinc-400">
                   Loading chunks...
                 </div>
               ) : (
@@ -275,13 +275,13 @@ export default function Documents() {
                   {docChunks.map((chunk, idx) => (
                     <div
                       key={chunk.id}
-                      className="p-3 bg-slate-50 rounded border border-slate-200 text-xs space-y-1.5"
+                      className="p-3 bg-zinc-950 rounded border border-zinc-800 text-xs space-y-1.5"
                     >
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                        <span className="font-bold text-slate-700">Chunk #{chunk.chunk_index + 1}</span>
+                      <div className="flex items-center justify-between text-[11px] text-zinc-400 font-mono">
+                        <span className="font-bold text-red-400">Chunk #{chunk.chunk_index + 1}</span>
                         <span>ID: {chunk.id}</span>
                       </div>
-                      <p className="font-serif text-slate-800 leading-relaxed whitespace-pre-wrap">
+                      <p className="font-serif text-zinc-300 leading-relaxed whitespace-pre-wrap">
                         {chunk.text}
                       </p>
                     </div>

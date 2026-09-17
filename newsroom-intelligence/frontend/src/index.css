@@ -2,22 +2,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #EFF6FF;
-  --color-brand-100: #DBEAFE;
-  --color-brand-200: #BFDBFE;
-  --color-brand-300: #93C5FD;
-  --color-brand-400: #60A5FA;
-  --color-brand-500: #2563EB;
-  --color-brand-600: #1D4ED8;
-  --color-brand-700: #1E40AF;
-  --color-brand-800: #1E3A8A;
-  --color-brand-900: #0F172A;
+  --color-brand-50: #450A0A;
+  --color-brand-100: #7F1D1D;
+  --color-brand-200: #991B1B;
+  --color-brand-300: #B91C1C;
+  --color-brand-400: #DC2626;
+  --color-brand-500: #EF4444;
+  --color-brand-600: #DC2626;
+  --color-brand-700: #B91C1C;
+  --color-brand-800: #991B1B;
+  --color-brand-900: #7F1D1D;
+  --color-brand-950: #450A0A;
   
-  --color-surface: #FFFFFF;
-  --color-background: #F8FAFC;
-  --color-muted: #64748B;
-  --color-dark: #0F172A;
-  --color-cardBorder: #E2E8F0;
+  --color-surface: #121215;
+  --color-background: #09090B;
+  --color-muted: #A1A1AA;
+  --color-dark: #FAFAFA;
+  --color-cardBorder: #27272A;
 
   --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -25,30 +26,30 @@
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #F8FAFC;
-  color: #0F172A;
+  background-color: #09090B;
+  color: #FAFAFA;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Glassmorphism and modern gradient card utilities */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(18, 18, 21, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(39, 39, 42, 0.8);
 }
 
 .gradient-border {
   position: relative;
-  background: #ffffff;
+  background: #121215;
   border-radius: 0.75rem;
 }
 
@@ -58,30 +59,30 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(147, 197, 253, 0.1), rgba(241, 245, 249, 0.5));
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(127, 29, 29, 0.2), rgba(39, 39, 42, 0.6));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
 }
 
-/* Custom scrollbars */
+/* Custom Red & Black scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #09090B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #27272A;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #DC2626;
 }
 
 /* Animation utilities */
@@ -94,29 +95,11 @@ body {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #F1F5F9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
 /* Print styles for PDF briefing export */
 @media print {
   body {
     background-color: #FFFFFF !important;
+    color: #000000 !important;
   }
   .no-print {
     display: none !important;

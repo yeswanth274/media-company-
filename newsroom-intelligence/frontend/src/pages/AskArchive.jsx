@@ -61,7 +61,7 @@ export default function AskArchive() {
   }, [queryParam]);
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 bg-zinc-950 text-zinc-100 min-h-full">
       <Header
         title="Ask the Archive"
         subtitle="Natural-language investigative query assistant backed strictly by indexed evidence."
@@ -69,23 +69,23 @@ export default function AskArchive() {
 
       <div className="max-w-5xl mx-auto px-6 space-y-6">
         {/* Main Search/Question Box */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-subtle space-y-4">
+        <div className="bg-zinc-900/90 rounded-lg border border-zinc-800 p-6 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5 text-brand-800" />
+            <label className="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+              <HelpCircle className="w-3.5 h-3.5 text-red-500" />
               Journalistic Research Inquiry
             </label>
 
             {/* Quick Filter */}
             <div className="flex items-center gap-2 text-xs">
-              <Filter className="w-3.5 h-3.5 text-slate-400" />
+              <Filter className="w-3.5 h-3.5 text-zinc-500" />
               <select
                 value={sourceTypeFilter}
                 onChange={(e) => {
                   setSourceTypeFilter(e.target.value);
                   if (question) executeAsk(question, { source_type: e.target.value });
                 }}
-                className="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-700 text-xs focus:outline-none focus:border-brand-800"
+                className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1 text-zinc-300 text-xs focus:outline-none focus:border-red-600"
               >
                 <option value="">All Source Types</option>
                 <option value="article">Articles Only</option>
@@ -97,6 +97,7 @@ export default function AskArchive() {
           </div>
 
           <SearchBar
+            variant="dark"
             onSearch={(q) => executeAsk(q)}
             placeholder="Ask a factual question about people, events, dates, or investigations..."
             initialValue={question}
@@ -112,11 +113,11 @@ export default function AskArchive() {
 
         {/* Error State */}
         {error && !loading && (
-          <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-800 text-sm flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+          <div className="p-4 bg-red-950/60 border border-red-800/80 rounded-lg text-red-200 text-sm flex items-start gap-2.5">
+            <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="font-semibold">Research Retrieval Failed</p>
-              <p className="text-xs leading-relaxed">{error}</p>
+              <p className="font-semibold text-red-300">Research Retrieval Failed</p>
+              <p className="text-xs leading-relaxed text-red-200">{error}</p>
             </div>
           </div>
         )}

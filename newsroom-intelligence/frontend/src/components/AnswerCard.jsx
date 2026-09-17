@@ -47,18 +47,18 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
   };
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 shadow-subtle overflow-hidden space-y-0 text-slate-900">
+    <div className="bg-zinc-900 rounded-lg border border-zinc-800 shadow-xl overflow-hidden space-y-0 text-zinc-100">
       {/* Header Bar */}
-      <div className="px-6 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-6 py-4 bg-zinc-950 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-1.5 rounded-md bg-brand-800 text-white">
+          <div className="p-1.5 rounded-md bg-red-600 text-white shadow-md shadow-red-950">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wide">
               Evidence-Backed Archival Synthesis
             </h3>
-            <p className="text-[11px] text-slate-500 font-mono">
+            <p className="text-[11px] text-zinc-400 font-mono">
               Journalistic research standard • Strict citation grounded
             </p>
           </div>
@@ -76,9 +76,9 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
 
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs font-medium text-zinc-300 hover:text-white px-2.5 py-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 transition-colors cursor-pointer"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             {copied ? 'Copied' : 'Copy'}
           </button>
         </div>
@@ -86,15 +86,15 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
 
       {/* Conflicting Accounts Alert Banner (if any) */}
       {conflicts && conflicts.length > 0 && (
-        <div className="px-6 py-3.5 bg-amber-50/80 border-b border-amber-200 text-amber-900 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
+        <div className="px-6 py-3.5 bg-red-950/40 border-b border-red-900/60 text-red-200 space-y-2">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-400">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
             Archive Discrepancy Detected (Conflicting Historical Accounts)
           </div>
           <div className="space-y-1.5">
             {conflicts.map((conf, idx) => (
-              <div key={idx} className="text-xs bg-white/70 p-2.5 rounded border border-amber-200/60 leading-relaxed">
-                <span className="font-semibold text-amber-950">{conf.issue}: </span>
+              <div key={idx} className="text-xs bg-zinc-950/80 p-2.5 rounded border border-red-900/50 leading-relaxed">
+                <span className="font-semibold text-red-300">{conf.issue}: </span>
                 {conf.description}
                 {conf.conflicting_sources?.length > 0 && (
                   <span className="ml-1.5 inline-flex items-center gap-1">
@@ -115,21 +115,21 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
       )}
 
       {/* Main Answer Narrative */}
-      <div className="p-6 space-y-5">
-        <div className="prose prose-slate max-w-none text-base font-serif leading-relaxed text-slate-900 bg-white">
+      <div className="p-6 space-y-5 bg-zinc-900">
+        <div className="prose prose-invert max-w-none text-base font-serif leading-relaxed text-zinc-100">
           {renderFormattedAnswer(answer)}
         </div>
 
         {/* Key Evidence Points (if present) */}
         {key_evidence && key_evidence.length > 0 && (
-          <div className="pt-4 border-t border-slate-100 space-y-2.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="pt-4 border-t border-zinc-800 space-y-2.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
               Key Documented Facts
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
               {key_evidence.map((item, idx) => (
-                <div key={idx} className="p-3 bg-slate-50 rounded border border-slate-200 text-xs text-slate-700 leading-snug flex items-start gap-2">
-                  <span className="text-brand-800 font-bold">•</span>
+                <div key={idx} className="p-3 bg-zinc-950/90 rounded border border-zinc-800 text-xs text-zinc-300 leading-snug flex items-start gap-2">
+                  <span className="text-red-500 font-bold">•</span>
                   <div className="flex-1">
                     <span>{item.text}</span>
                     <span className="ml-1 inline-flex items-center gap-0.5">
@@ -152,16 +152,16 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
 
       {/* Expandable Sources Section */}
       {citations && citations.length > 0 && (
-        <div className="border-t border-slate-200 bg-slate-50/50">
+        <div className="border-t border-zinc-800 bg-zinc-950">
           <button
             onClick={() => setSourcesExpanded(!sourcesExpanded)}
-            className="w-full px-6 py-3 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-700 hover:bg-slate-100/70 transition-colors cursor-pointer"
+            className="w-full px-6 py-3 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-300 hover:bg-zinc-900 transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <FileText className="w-3.5 h-3.5 text-brand-800" />
+              <FileText className="w-3.5 h-3.5 text-red-500" />
               <span>Cited Archival Sources ({citations.length})</span>
             </div>
-            {sourcesExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+            {sourcesExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
           </button>
 
           {sourcesExpanded && (
@@ -170,33 +170,33 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
                 <div
                   key={cit.id}
                   onClick={() => onSelectCitation(cit.chunk_id, cit.id)}
-                  className="p-3.5 bg-white rounded-md border border-slate-200 hover:border-brand-500 hover:shadow-xs transition-all cursor-pointer space-y-2 group"
+                  className="p-3.5 bg-zinc-900/90 rounded-md border border-zinc-800 hover:border-red-600 transition-all cursor-pointer space-y-2 group"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-brand-50 text-brand-800 border border-brand-200 group-hover:bg-brand-800 group-hover:text-white transition-colors">
+                      <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-red-950/80 text-red-400 border border-red-800/80 group-hover:bg-red-600 group-hover:text-white transition-colors">
                         [{cit.id}]
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                      <span className="text-[11px] font-semibold text-zinc-400 uppercase">
                         {formatSourceType(cit.source_type)}
                       </span>
                     </div>
-                    <span className="text-[11px] text-slate-400 font-mono">
+                    <span className="text-[11px] text-zinc-500 font-mono">
                       {formatDate(cit.date)}
                     </span>
                   </div>
 
-                  <h5 className="text-xs font-bold text-slate-900 line-clamp-1 group-hover:text-brand-800 transition-colors">
+                  <h5 className="text-xs font-bold text-white line-clamp-1 group-hover:text-red-400 transition-colors">
                     {cit.title}
                   </h5>
 
-                  <p className="text-[11px] font-serif text-slate-600 line-clamp-2 leading-relaxed bg-slate-50 p-1.5 rounded border border-slate-100">
+                  <p className="text-[11px] font-serif text-zinc-300 line-clamp-2 leading-relaxed bg-zinc-950/90 p-2 rounded border border-zinc-800/80">
                     "{cit.excerpt}"
                   </p>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+                  <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-1">
                     <span>{cit.publication || 'Archival record'}</span>
-                    <span className="text-brand-800 font-medium group-hover:underline flex items-center gap-0.5">
+                    <span className="text-red-400 font-medium group-hover:underline flex items-center gap-0.5">
                       Inspect Excerpt & Context &rarr;
                     </span>
                   </div>

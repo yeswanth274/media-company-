@@ -63,10 +63,10 @@ export default function UploadDropzone({ onFileSelected, processing = false, pro
         onClick={() => !processing && fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
           dragOver
-            ? 'border-brand-800 bg-brand-50/50'
+            ? 'border-red-500 bg-red-950/30'
             : selectedFile
-            ? 'border-emerald-300 bg-emerald-50/30'
-            : 'border-slate-300 bg-white hover:border-brand-500 hover:bg-slate-50'
+            ? 'border-red-600/80 bg-red-950/20'
+            : 'border-zinc-800 bg-zinc-950/90 hover:border-red-600/60 hover:bg-zinc-900/60'
         } ${processing ? 'opacity-75 cursor-not-allowed' : ''}`}
       >
         <input
@@ -79,30 +79,30 @@ export default function UploadDropzone({ onFileSelected, processing = false, pro
         />
 
         <div className="max-w-md mx-auto space-y-3">
-          <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+          <div className="w-12 h-12 mx-auto rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
             {processing ? (
-              <Loader2 className="w-6 h-6 text-brand-800 animate-spin" />
+              <Loader2 className="w-6 h-6 text-red-500 animate-spin" />
             ) : selectedFile ? (
-              <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+              <CheckCircle2 className="w-6 h-6 text-emerald-400" />
             ) : (
-              <UploadCloud className="w-6 h-6 text-brand-800" />
+              <UploadCloud className="w-6 h-6 text-red-500" />
             )}
           </div>
 
           <div className="space-y-1">
             {selectedFile ? (
               <div>
-                <p className="text-sm font-bold text-slate-900">{selectedFile.name}</p>
-                <p className="text-xs font-mono text-slate-500">
+                <p className="text-sm font-bold text-white">{selectedFile.name}</p>
+                <p className="text-xs font-mono text-zinc-400">
                   {(selectedFile.size / 1024).toFixed(1)} KB • Click or drop another to replace
                 </p>
               </div>
             ) : (
               <>
-                <p className="text-sm font-semibold text-slate-800">
-                  Drop newsroom files here, or <span className="text-brand-800 underline">browse</span>
+                <p className="text-sm font-semibold text-zinc-200">
+                  Drop newsroom files here, or <span className="text-red-400 underline">browse</span>
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-zinc-500">
                   Supports PDF, DOCX, TXT, Markdown, HTML, CSV (Up to 50MB)
                 </p>
               </>
@@ -112,33 +112,33 @@ export default function UploadDropzone({ onFileSelected, processing = false, pro
       </div>
 
       {error && (
-        <div className="p-3 bg-rose-50 border border-rose-200 rounded text-xs text-rose-700 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+        <div className="p-3 bg-red-950/60 border border-red-800/80 rounded text-xs text-red-200 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Real-time processing stepper */}
       {processing && (
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-3">
+        <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg space-y-3">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-slate-800 uppercase tracking-wider">
+            <span className="font-bold text-zinc-200 uppercase tracking-wider">
               Archival Processing Pipeline
             </span>
-            <span className="font-mono text-brand-800 font-semibold animate-pulse">
+            <span className="font-mono text-red-400 font-semibold animate-pulse">
               {processingStep || 'Processing...'}
             </span>
           </div>
 
-          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-brand-800 h-full rounded-full w-2/3 animate-pulse" />
+          <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+            <div className="bg-red-600 h-full rounded-full w-2/3 animate-pulse shadow-red-glow" />
           </div>
 
-          <div className="grid grid-cols-4 gap-2 text-[11px] text-slate-500 text-center font-mono">
-            <div className="text-brand-800 font-bold">1. Extract</div>
-            <div className="text-brand-800 font-bold">2. Chunk</div>
-            <div className="text-brand-800 font-bold">3. Embed</div>
-            <div className="text-brand-800 font-bold">4. FAISS Index</div>
+          <div className="grid grid-cols-4 gap-2 text-[11px] text-zinc-400 text-center font-mono">
+            <div className="text-red-400 font-bold">1. Extract</div>
+            <div className="text-red-400 font-bold">2. Chunk</div>
+            <div className="text-red-400 font-bold">3. Embed</div>
+            <div className="text-red-400 font-bold">4. FAISS Index</div>
           </div>
         </div>
       )}

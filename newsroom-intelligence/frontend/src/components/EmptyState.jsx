@@ -9,21 +9,21 @@ export default function EmptyState({
   onAction,
 }) {
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-12 text-center shadow-subtle space-y-4">
-      <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-        <Icon className="w-6 h-6" />
+    <div className="bg-zinc-900 rounded-lg border border-zinc-800 p-12 text-center shadow-xl space-y-4 text-zinc-100">
+      <div className="w-12 h-12 mx-auto rounded-full bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-500">
+        <Icon className="w-6 h-6 text-red-400" />
       </div>
 
       <div className="space-y-1 max-w-md mx-auto">
-        <h4 className="text-sm font-bold text-slate-800">{title}</h4>
-        <p className="text-xs text-slate-500 leading-relaxed">{description}</p>
+        <h4 className="text-sm font-bold text-white">{title}</h4>
+        <p className="text-xs text-zinc-400 leading-relaxed">{description}</p>
       </div>
 
       {actionText && onAction && (
         <div className="pt-2">
           <button
             onClick={onAction}
-            className="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-md hover:bg-slate-900 transition-colors cursor-pointer"
+            className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-md transition-colors cursor-pointer shadow-md shadow-red-950"
           >
             {actionText}
           </button>
