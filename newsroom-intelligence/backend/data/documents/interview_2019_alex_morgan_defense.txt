@@ -1,0 +1,15 @@
+TECH & CAPITAL REVIEW: INTERVIEW WITH ALEX MORGAN
+Interviewer: Rachel Green
+Publication Date: February 10, 2019
+
+[00:02:15] Rachel Green: Alex, municipal prosecutors and press reports have cast severe doubt on Northstar's telemetry validation. How do you respond to allegations of intentional suppression?
+
+[00:02:40] Alex Morgan: The narrative being constructed in the press is fundamentally misinformed. Executive leadership was completely unaware of any systemic calibration discrepancies until late 2018, when external municipal audit preliminary reports were shared with our board. As soon as reliable data was presented, we cooperated transparently.
+
+[00:06:10] Rachel Green: Former engineers claim they warned you directly in January 2018.
+
+[00:06:35] Alex Morgan: We received dozens of technical memorandums daily. The preliminary notes from early 2018 were conflicting internal engineering disagreements, not verified product defects. We acted on the basis of sound engineering consensus at all times. Our hardware has never caused a single structural failure.
+
+[00:12:50] Rachel Green: What is your financial outlook following the cancellations of municipal renewals?
+
+[00:13:10] Alex Morgan: Northstar maintains strong institutional backing and a cash reserve exceeding $40 million. We are confident our re-engineered Apex-IV architecture will surpass all regulatory benchmarks.

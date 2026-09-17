@@ -1,0 +1,15 @@
+INTERVIEW TRANSCRIPT: ELENA ROSTOVA
+Conducted by Liam O'Connor, Metro Investigative Quarterly
+Date: May 19, 2018 | Location: Off-the-record secure facility
+
+[00:04:12] Liam O'Connor: Elena, thank you for agreeing to speak with us. When did you first detect anomalies in the Apex sensor telemetry?
+
+[00:04:30] Elena Rostova: It was late autumn 2017 when we were testing the third-generation optical sensors in the damp environmental chambers. We observed persistent sensor drift exceeding 14% after continuous 90-day cycles. When I raised this with senior management, I was told it was a statistical artifact.
+
+[00:08:45] Liam O'Connor: Public reporting from Metro Daily indicated that the investigation began in April 2018. Is that when internal leadership first reacted?
+
+[00:09:05] Elena Rostova: No, that timeline is inaccurate regarding internal knowledge. Our internal engineering audit began in January 2018, nearly four months before the city announced its probe. In January 2018, our internal quality committee drafted a 60-page red-flag report directly delivered to Alex Morgan and CFO Marcus Vance. The executive team decided to handle it quietly rather than notify municipal partners.
+
+[00:15:20] Liam O'Connor: What happened after you submitted the red-flag memo?
+
+[00:15:40] Elena Rostova: Within three weeks, my team's administrative database access was restricted, and calibration logs were routed through executive review before being archived. That is when I realized external regulatory disclosure was the only ethical path left.

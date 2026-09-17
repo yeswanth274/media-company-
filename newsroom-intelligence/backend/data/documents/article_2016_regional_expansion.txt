@@ -1,0 +1,9 @@
+NORTHSTAR TECHNOLOGIES ENTERS REGIONAL MARKET WITH $22 MILLION CAPITAL ROUND
+By David Chen, Regional Tribune
+Published June 20, 2016
+
+OAKRIDGE — Northstar Technologies announced Monday that it has secured $22 million in Series B financing led by Crestview Ventures, accelerating its regional rollout across four neighboring municipalities.
+
+The expansion comes as Northstar completes the initial phase of its Metro City deployment. According to company filings, the firm's sensor arrays are now active on 180 transit nodes. Founder and CEO Alex Morgan announced the opening of a dedicated regional engineering center in Oakridge, expecting to hire 120 hardware engineers and software specialists over the next eighteen months.
+
+However, municipal union representatives have voiced mild skepticism regarding data ownership and maintenance protocols, demanding third-party verification of sensor telemetry reliability.

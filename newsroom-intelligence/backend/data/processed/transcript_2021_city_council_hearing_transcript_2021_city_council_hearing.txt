@@ -1,0 +1,13 @@
+METRO CITY COUNCIL OVERSIGHT COMMITTEE
+HEARING ON SMART CITY INFRASTRUCTURE CONTRACTS
+Official Record — April 5, 2021
+
+Chairwoman Helen Brooks: The committee will come to order. We are reviewing the municipal performance of Northstar Technologies sensor systems deployed under Contract #2015-TX-99. Chief Inspector Vance, what are your investigative conclusions?
+
+Chief Inspector Patricia Vance: Our audit examined 450 municipal sensor nodes deployed between 2016 and 2020. The findings confirm that 28% of telemetry logs submitted to the transit authority exhibited manual baseline adjustments that masked sensor degradation.
+
+Councilman Jeffrey Ross: Was there any recorded instance where bridge or transit structural integrity was compromised without detection?
+
+Chief Inspector Patricia Vance: Physical inspections by state structural engineers confirmed that the underlying civil infrastructure remained structurally sound. However, the early-warning telemetry system for which taxpayers paid $14.8 million did not perform as represented, creating an unacceptable margin of unmonitored risk.
+
+Chairwoman Helen Brooks: This committee recommends total contract termination and referral to the State Attorney General for civil restitution proceedings.

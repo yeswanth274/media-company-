@@ -1,0 +1,11 @@
+BUSINESS ETHICS JOURNAL: EXECUTIVE PERSPECTIVES
+Interview with Marcus Vance, Former CFO of Northstar Technologies
+Conducted by David Chen | August 15, 2023
+
+[00:05:10] David Chen: Mr. Vance, looking back at the 2018-2021 period, what financial pressures dictated company strategy?
+
+[00:05:35] Marcus Vance: In 2017 and 2018, Northstar was preparing for a potential initial public offering. Any public acknowledgment of hardware recall or sensor recalibration across tens of thousands of deployed units would have decimated our valuation and triggered debt covenants.
+
+[00:11:20] David Chen: Did executive leadership review the January 2018 engineering dossier?
+
+[00:11:45] Marcus Vance: Yes. The executive committee, including Alex Morgan and myself, received Elena Rostova's report on January 18, 2018. We spent three consecutive board sessions debating whether to issue a voluntary recall or patch the telemetry through over-the-air firmware updates. The decision was made to attempt software dampening first to avoid municipal panic.
