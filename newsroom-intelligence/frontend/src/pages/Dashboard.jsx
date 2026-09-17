@@ -14,7 +14,6 @@ import {
   PlusCircle,
   ExternalLink
 } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
 import api from '../services/api';
 import { formatDate, formatSourceType } from '../utils/formatters';
@@ -31,10 +30,6 @@ export default function Dashboard() {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
-
-  const handleAsk = (query) => {
-    navigate(`/ask?q=${encodeURIComponent(query)}`);
-  };
 
   return (
     <div className="space-y-6 pb-12 bg-zinc-950 text-zinc-100 min-h-full">
@@ -63,12 +58,20 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="relative z-10">
-            <SearchBar
-              variant="dark"
-              onSearch={handleAsk}
-              placeholder="Ask your archive anything (e.g. 'What happened during the 2018 Northstar probe?')..."
-            />
+          <div className="relative z-10 flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate('/ask')}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-sm shadow-lg shadow-red-950/60 transition-all cursor-pointer active:scale-98"
+            >
+              <span>Ask the Archive</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => navigate('/search')}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-zinc-800 hover:border-red-600/50 font-semibold text-sm transition-all cursor-pointer"
+            >
+              <span>Deep Semantic Search</span>
+            </button>
           </div>
         </div>
 
