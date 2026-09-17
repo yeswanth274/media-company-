@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useOutletContext } from 'react-router-dom';
-import { HelpCircle, Sparkles, Filter, RefreshCw, AlertCircle, ShieldCheck } from 'lucide-react';
+import { HelpCircle, Filter, RefreshCw, AlertCircle, ShieldCheck } from 'lucide-react';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import AnswerCard from '../components/AnswerCard';
 import LoadingState from '../components/LoadingState';
 import api from '../services/api';
-
-const DEMO_QUESTIONS = [
-  "What happened during the 2018 Northstar investigation?",
-  "What did Alex Morgan say about the investigation?",
-  "Which sources disagree about when the investigation began?",
-  "Build a timeline of the Northstar investigation.",
-  "What evidence do we have about the 2021 settlement?",
-  "Who are the key people mentioned in the archive?",
-  "Show me previous coverage of Northstar Technologies.",
-  "Give me a background briefing for a developing story about Northstar.",
-];
 
 export default function AskArchive() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -102,7 +91,6 @@ export default function AskArchive() {
             placeholder="Ask a factual question about people, events, dates, or investigations..."
             initialValue={question}
             loading={loading}
-            sampleQueries={DEMO_QUESTIONS}
           />
         </div>
 

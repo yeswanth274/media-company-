@@ -19,15 +19,6 @@ import Header from '../components/Header';
 import api from '../services/api';
 import { formatDate, formatSourceType } from '../utils/formatters';
 
-const DEMO_QUESTIONS = [
-  "What happened during the 2018 Northstar investigation?",
-  "What did Alex Morgan say about the investigation?",
-  "Which sources disagree about when the investigation began?",
-  "Build a timeline of the Northstar investigation.",
-  "What evidence do we have about the 2021 settlement?",
-  "Show me previous coverage of Northstar Technologies.",
-];
-
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -77,7 +68,6 @@ export default function Dashboard() {
               variant="dark"
               onSearch={handleAsk}
               placeholder="Ask your archive anything (e.g. 'What happened during the 2018 Northstar probe?')..."
-              sampleQueries={DEMO_QUESTIONS.slice(0, 4)}
             />
           </div>
         </div>

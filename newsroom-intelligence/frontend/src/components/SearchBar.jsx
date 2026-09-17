@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Search, CornerDownLeft } from 'lucide-react';
 
 export default function SearchBar({
   onSearch,
   placeholder = "Ask your archive anything...",
   initialValue = "",
   loading = false,
-  sampleQueries = [],
   className = "",
   variant = "dark"
 }) {
@@ -19,13 +18,8 @@ export default function SearchBar({
     }
   };
 
-  const handleSelectSample = (sample) => {
-    setQuery(sample);
-    onSearch(sample);
-  };
-
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={`${className}`}>
       <form onSubmit={handleSubmit} className="relative flex items-center">
         <div className="absolute left-4 pointer-events-none flex items-center">
           <Search className="w-5 h-5 text-red-500" />
@@ -57,24 +51,6 @@ export default function SearchBar({
           </button>
         </div>
       </form>
-
-      {sampleQueries.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-red-500" /> Suggested:
-          </span>
-          {sampleQueries.map((sample, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSelectSample(sample)}
-              className="text-xs px-2.5 py-1 rounded-md transition-all cursor-pointer text-left font-normal text-zinc-300 bg-zinc-900/90 hover:bg-zinc-800 hover:text-white border border-zinc-800 hover:border-red-600/50"
-            >
-              {sample}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
