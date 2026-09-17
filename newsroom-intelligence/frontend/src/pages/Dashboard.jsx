@@ -5,7 +5,6 @@ import {
   FileText,
   Layers,
   Database,
-  Briefcase,
   Clock,
   ArrowRight,
   ShieldCheck,
@@ -76,7 +75,7 @@ export default function Dashboard() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-zinc-900/90 p-5 rounded-lg border border-zinc-800 shadow-xl space-y-1">
             <div className="flex items-center justify-between text-zinc-400">
               <span className="text-xs font-semibold uppercase tracking-wider">Archived Documents</span>
@@ -108,17 +107,6 @@ export default function Dashboard() {
               {stats?.sources_count ?? (loading ? '...' : 0)}
             </div>
             <p className="text-[11px] text-zinc-500">Publications & authorities</p>
-          </div>
-
-          <div className="bg-zinc-900/90 p-5 rounded-lg border border-zinc-800 shadow-xl space-y-1">
-            <div className="flex items-center justify-between text-zinc-400">
-              <span className="text-xs font-semibold uppercase tracking-wider">Developing Stories</span>
-              <Briefcase className="w-4 h-4 text-red-500" />
-            </div>
-            <div className="text-2xl font-bold text-white font-mono">
-              {stats?.stories_count ?? (loading ? '...' : 0)}
-            </div>
-            <p className="text-[11px] text-zinc-500">Investigative dossiers</p>
           </div>
         </div>
 
@@ -165,7 +153,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="py-8 text-center text-xs text-zinc-500">
-                No recent queries recorded yet. Use the search bar above to begin!
+                No recent queries recorded yet. Explore the archive to begin!
               </div>
             )}
           </div>
@@ -232,7 +220,7 @@ export default function Dashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
-              onClick={() => handleAsk("What did Alex Morgan say about the investigation?")}
+              onClick={() => navigate(`/ask?q=${encodeURIComponent("What did Alex Morgan say about the investigation?")}`)}
               className="p-4 bg-zinc-900 rounded-lg border border-zinc-800 hover:border-red-600 text-left transition-all hover:shadow-lg hover:shadow-red-950/30 cursor-pointer space-y-1.5"
             >
               <div className="flex items-center gap-1.5 text-xs font-bold text-red-400">
@@ -245,7 +233,7 @@ export default function Dashboard() {
             </button>
 
             <button
-              onClick={() => handleAsk("Which sources disagree about when the investigation began?")}
+              onClick={() => navigate(`/ask?q=${encodeURIComponent("Which sources disagree about when the investigation began?")}`)}
               className="p-4 bg-zinc-900 rounded-lg border border-zinc-800 hover:border-red-600 text-left transition-all hover:shadow-lg hover:shadow-red-950/30 cursor-pointer space-y-1.5"
             >
               <div className="flex items-center gap-1.5 text-xs font-bold text-red-400">
@@ -258,15 +246,15 @@ export default function Dashboard() {
             </button>
 
             <button
-              onClick={() => navigate('/stories')}
+              onClick={() => navigate('/documents/upload')}
               className="p-4 bg-zinc-900 rounded-lg border border-zinc-800 hover:border-red-600 text-left transition-all hover:shadow-lg hover:shadow-red-950/30 cursor-pointer space-y-1.5"
             >
-              <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-300">
-                <Briefcase className="w-3.5 h-3.5 text-red-500" /> Developing Story Workspace
+              <div className="flex items-center gap-1.5 text-xs font-bold text-red-400">
+                <PlusCircle className="w-3.5 h-3.5" /> Document Ingestion
               </div>
-              <h4 className="text-xs font-semibold text-white">Build Comprehensive Dossier</h4>
+              <h4 className="text-xs font-semibold text-white">Ingest New Archival Records</h4>
               <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Assemble multi-chapter editorial briefing with verified chronology and export to PDF.
+                Upload PDFs, TXT transcripts, or HTML reports for instant vector chunking.
               </p>
             </button>
           </div>

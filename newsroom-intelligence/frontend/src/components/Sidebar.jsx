@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   HelpCircle,
   Search,
-  Briefcase,
   FileText,
 } from 'lucide-react';
 import api from '../services/api';
@@ -13,7 +12,6 @@ const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/ask', label: 'Ask the Archive', icon: HelpCircle },
   { path: '/search', label: 'Search Archive', icon: Search },
-  { path: '/stories', label: 'Developing Stories', icon: Briefcase },
   { path: '/documents', label: 'Archive Documents', icon: FileText },
 ];
 
