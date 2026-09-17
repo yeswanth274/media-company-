@@ -7,7 +7,7 @@ from app.utils.logging import logger
 class FallbackSynthesisProvider(LLMProvider):
     """
     Deterministic offline evidence synthesis engine.
-    Used as an immediate fallback if no external LLM API key is configured or network is unavailable.
+    Used as an immediate fallback if no external LLM API key is configured.
     Guarantees strict factual fidelity to retrieved archive chunks and exact [S#] citations.
     """
     @property
@@ -27,20 +27,27 @@ class FallbackSynthesisProvider(LLMProvider):
         q_match = re.search(r"QUESTION:\s*(.*?)(?=\n\nRETRIEVED ARCHIVAL EVIDENCE:|\Z)", user_prompt, re.DOTALL)
         question = q_match.group(1).strip() if q_match else ""
 
-        if not source_blocks:
-            return json.dumps({
-                "answer": "The archive evidence available to me is insufficient to answer this confidently.",
-                "evidence_level": "insufficient",
-                "key_evidence": [],
-                "conflicts": [],
-                "citations": []
-            })
+        insufficient_response = {
+            "answer": f"The archive evidence available is insufficient to answer '{question}' confidently, as no matching records were found in the indexed documents.",
+            "evidence_level": "insufficient",
+            "key_evidence": [],
+            "conflicts": [],
+            "citations": []
+        }
+
+        if not source_blocks or not question:
+            return json.dumps(insufficient_response, indent=2)
 
         # Calculate keyword relevance of question against retrieved text
-        q_terms = set(re.findall(r"\b\w{4,}\b", question.lower()))
-        # Exclude common question words
-        common_words = {"what", "when", "where", "which", "about", "show", "give", "tell", "from", "have", "said", "with", "during", "happened"}
-        filtered_q_terms = q_terms - common_words
+        q_terms = set(re.findall(r"\b[a-zA-Z0-9]{3,}\b", question.lower()))
+        common_words = {
+            "what", "when", "where", "which", "about", "show", "give", "tell",
+            "from", "have", "said", "with", "during", "happened", "this", "that",
+            "these", "those", "does", "were", "been", "their", "there", "they",
+            "could", "would", "should", "your", "mine", "some", "many", "much",
+            "explain", "detail", "details", "information", "info", "please"
+        }
+        filtered_q_terms = {t for t in q_terms if t not in common_words}
 
         citations_list = []
         key_evidence = []
@@ -67,15 +74,18 @@ class FallbackSynthesisProvider(LLMProvider):
             term_hits = sum(1 for t in filtered_q_terms if t in text_lower)
             total_term_hits += term_hits
 
+            # Only consider chunks that actually contain query terms if query terms exist
+            if filtered_q_terms and term_hits == 0:
+                continue
+
             citations_list.append({
                 "id": src_id,
                 "chunk_id": chunk_id
             })
 
-            # Check for conflict in dates or allegations - deduplicated and concise
+            # Check for conflict in dates or allegations
             if date_val and date_val != "None" and len(conflicts) < 2:
                 if any(w in question.lower() for w in ["investigation", "began", "timeline", "disagree", "conflict", "settlement"]):
-                    # Identify the core discrepancy between April 2018 public reporting and January 2018 internal audit
                     if "2018-04" in date_val or "2018-05" in date_val:
                         for other_src, other_date in seen_dates.items():
                             if ("2018-01" in other_date or "2016" in other_date) and not conflicts:
@@ -97,9 +107,8 @@ class FallbackSynthesisProvider(LLMProvider):
                     seen_dates[src_id] = date_val
 
             sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", evidence_text) if len(s.strip()) > 20]
-            # Prioritize sentences that match query terms
             matching_sents = [s for s in sentences if any(t in s.lower() for t in filtered_q_terms)]
-            chosen_sent = matching_sents[0] if matching_sents else (sentences[0] if sentences else None)
+            chosen_sent = matching_sents[0] if matching_sents else None
             
             if chosen_sent:
                 answer_sentences.append(f"{chosen_sent} [{src_id}]")
@@ -108,21 +117,12 @@ class FallbackSynthesisProvider(LLMProvider):
                     "citations": [src_id]
                 })
 
-        # Check if question has zero or near-zero relevance to archive content
-        if filtered_q_terms and total_term_hits == 0:
-            return json.dumps({
-                "answer": "The archive evidence available to me is insufficient to answer this confidently.",
-                "evidence_level": "insufficient",
-                "key_evidence": [],
-                "conflicts": [],
-                "citations": []
-            })
+        # If question has zero relevance or no matching sentences, return insufficient
+        if not citations_list or not answer_sentences:
+            return json.dumps(insufficient_response, indent=2)
 
         combined_answer = " ".join(answer_sentences[:4])
-        if not combined_answer:
-            combined_answer = f"Archival records contain {len(source_blocks)} relevant entries regarding this inquiry. [{source_blocks[0][0]}]"
-
-        evidence_level = "strong" if (len(citations_list) >= 3 and total_term_hits >= 2) else ("moderate" if len(citations_list) >= 1 else "limited")
+        evidence_level = "strong" if (len(citations_list) >= 2 and total_term_hits >= 2) else "moderate"
 
         response_dict = {
             "answer": combined_answer,
