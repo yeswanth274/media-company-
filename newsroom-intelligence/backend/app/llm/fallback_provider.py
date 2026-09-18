@@ -3,6 +3,7 @@ import re
 from typing import Dict, Any, List
 from app.llm.base import LLMProvider
 from app.utils.logging import logger
+from app.utils.text_utils import extract_content_terms
 
 class FallbackSynthesisProvider(LLMProvider):
     """
@@ -39,15 +40,10 @@ class FallbackSynthesisProvider(LLMProvider):
             return json.dumps(insufficient_response, indent=2)
 
         # Calculate keyword relevance of question against retrieved text
-        q_terms = set(re.findall(r"\b[a-zA-Z0-9]{3,}\b", question.lower()))
-        common_words = {
-            "what", "when", "where", "which", "about", "show", "give", "tell",
-            "from", "have", "said", "with", "during", "happened", "this", "that",
-            "these", "those", "does", "were", "been", "their", "there", "they",
-            "could", "would", "should", "your", "mine", "some", "many", "much",
-            "explain", "detail", "details", "information", "info", "please"
-        }
-        filtered_q_terms = {t for t in q_terms if t not in common_words}
+        filtered_q_terms = extract_content_terms(question)
+        if not filtered_q_terms:
+            # If question has no content words (e.g. 'what is this'), return insufficient
+            return json.dumps(insufficient_response, indent=2)
 
         citations_list = []
         key_evidence = []
@@ -69,13 +65,14 @@ class FallbackSynthesisProvider(LLMProvider):
             date_match = re.search(r"Date:\s*(.*?)\n", block_text)
             date_val = date_match.group(1).strip() if date_match else ""
 
-            # Check term overlap
-            text_lower = (evidence_text + " " + title).lower()
-            term_hits = sum(1 for t in filtered_q_terms if t in text_lower)
+            # Check whole-word term overlap
+            combined_chunk_text = f"{title} {evidence_text}".lower()
+            chunk_tokens = set(re.findall(r"[a-zA-Z0-9_\'-]+", combined_chunk_text))
+            term_hits = len(filtered_q_terms.intersection(chunk_tokens))
             total_term_hits += term_hits
 
-            # Only consider chunks that actually contain query terms if query terms exist
-            if filtered_q_terms and term_hits == 0:
+            # Only consider chunks that actually contain query terms
+            if term_hits == 0:
                 continue
 
             citations_list.append({
@@ -107,7 +104,12 @@ class FallbackSynthesisProvider(LLMProvider):
                     seen_dates[src_id] = date_val
 
             sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", evidence_text) if len(s.strip()) > 20]
-            matching_sents = [s for s in sentences if any(t in s.lower() for t in filtered_q_terms)]
+            matching_sents = []
+            for s in sentences:
+                s_tokens = set(re.findall(r"[a-zA-Z0-9_\'-]+", s.lower()))
+                if filtered_q_terms.intersection(s_tokens):
+                    matching_sents.append(s)
+
             chosen_sent = matching_sents[0] if matching_sents else None
             
             if chosen_sent:

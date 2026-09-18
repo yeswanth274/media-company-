@@ -47,6 +47,7 @@ class DocumentRepository:
         source_type: Optional[str] = None,
         publication: Optional[str] = None,
         search_term: Optional[str] = None,
+        sort_by: str = "newest_upload",
         limit: int = 100,
         offset: int = 0
     ) -> List[DocumentRead]:
@@ -71,12 +72,46 @@ class DocumentRepository:
                 like_str = f"%{search_term}%"
                 params.extend([like_str, like_str, like_str])
 
-            query += " GROUP BY d.id ORDER BY d.publication_date DESC, d.created_at DESC LIMIT ? OFFSET ?"
+            query += " GROUP BY d.id "
+
+            if sort_by in ("oldest_upload", "created_asc"):
+                query += " ORDER BY d.created_at ASC, d.id ASC "
+            elif sort_by in ("newest_date", "date_desc"):
+                query += " ORDER BY COALESCE(NULLIF(d.publication_date, ''), d.created_at) DESC, d.id DESC "
+            elif sort_by in ("oldest_date", "date_asc"):
+                query += " ORDER BY COALESCE(NULLIF(d.publication_date, ''), d.created_at) ASC, d.id ASC "
+            elif sort_by == "title_asc":
+                query += " ORDER BY d.title ASC "
+            elif sort_by == "title_desc":
+                query += " ORDER BY d.title DESC "
+            else:
+                # Default: newest uploaded first
+                query += " ORDER BY d.created_at DESC, d.id DESC "
+
+            query += " LIMIT ? OFFSET ?"
             params.extend([limit, offset])
 
             cursor.execute(query, params)
             rows = cursor.fetchall()
             return [DocumentRead(**dict(r)) for r in rows]
+
+    @staticmethod
+    def update_metadata(doc_id: int, **kwargs) -> bool:
+        allowed = {"title", "source_type", "publication", "author", "publication_date", "location", "description"}
+        updates = {k: v for k, v in kwargs.items() if k in allowed and v is not None}
+        if not updates:
+            return False
+        set_clauses = [f"{k} = ?" for k in updates.keys()]
+        values = list(updates.values())
+        values.append(doc_id)
+        with db_session() as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"""
+                UPDATE documents
+                SET {', '.join(set_clauses)}, updated_at = datetime('now')
+                WHERE id = ?
+            """, values)
+            return cursor.rowcount > 0
 
     @staticmethod
     def delete(doc_id: int) -> bool:

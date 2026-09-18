@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { FileText, PlusCircle, RefreshCw, Trash2, Search, Filter, Eye, Layers, CheckCircle2, AlertCircle } from 'lucide-react';
+import { FileText, PlusCircle, RefreshCw, Trash2, Search, Filter, Eye, Layers, CheckCircle2, AlertCircle, ArrowUpDown, Sparkles } from 'lucide-react';
 import Header from '../components/Header';
 import EmptyState from '../components/EmptyState';
 import api from '../services/api';
@@ -13,6 +13,7 @@ export default function Documents() {
   const [notification, setNotification] = useState(null);
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  const [sortBy, setSortBy] = useState('newest_upload');
   
   // Selected doc for viewing chunks
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -21,6 +22,7 @@ export default function Documents() {
 
   const [searchParams] = useSearchParams();
   const highlightDocId = searchParams.get('highlight');
+  const highlightedRowRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchDocuments = async () => {
@@ -29,11 +31,14 @@ export default function Documents() {
       const docs = await api.getDocuments({
         search: search || undefined,
         source_type: selectedType || undefined,
+        sort_by: sortBy || 'newest_upload',
       });
       setDocuments(docs || []);
       if (highlightDocId) {
         const found = docs.find((d) => d.id === parseInt(highlightDocId));
-        if (found) handleViewChunks(found);
+        if (found) {
+          handleViewChunks(found);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -44,7 +49,13 @@ export default function Documents() {
 
   useEffect(() => {
     fetchDocuments();
-  }, [search, selectedType]);
+  }, [search, selectedType, sortBy]);
+
+  useEffect(() => {
+    if (highlightDocId && highlightedRowRef.current) {
+      highlightedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [highlightDocId, documents]);
 
   const handleViewChunks = async (doc) => {
     setSelectedDoc(doc);
@@ -123,10 +134,10 @@ export default function Documents() {
           </div>
         )}
 
-        {/* Filter and Search Bar */}
+        {/* Filter, Sort, and Search Bar */}
         <div className="bg-zinc-900/90 p-4 rounded-lg border border-zinc-800 shadow-xl flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3 flex-1 min-w-[280px]">
-            <div className="relative flex-1">
+          <div className="flex items-center flex-wrap gap-3 flex-1 min-w-[300px]">
+            <div className="relative flex-1 min-w-[200px]">
               <Search className="w-4 h-4 text-red-500 absolute left-3 top-2.5" />
               <input
                 type="text"
@@ -140,7 +151,7 @@ export default function Documents() {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-red-600"
+              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-red-600 cursor-pointer"
             >
               <option value="">All Document Types</option>
               <option value="article">Articles</option>
@@ -148,6 +159,23 @@ export default function Documents() {
               <option value="transcript">Transcripts</option>
               <option value="footage_note">Footage Notes</option>
             </select>
+
+            <div className="flex items-center gap-1.5">
+              <ArrowUpDown className="w-3.5 h-3.5 text-red-500 shrink-0" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-red-600 cursor-pointer"
+                title="Sort catalogue documents"
+              >
+                <option value="newest_upload">Recently Uploaded (Newest First)</option>
+                <option value="oldest_upload">Historically Oldest Ingested</option>
+                <option value="newest_date">Record Date (Newest First)</option>
+                <option value="oldest_date">Record Date (Oldest First)</option>
+                <option value="title_asc">Title (A to Z)</option>
+                <option value="title_desc">Title (Z to A)</option>
+              </select>
+            </div>
           </div>
 
           <button
@@ -170,7 +198,7 @@ export default function Documents() {
                     <th className="py-3 px-4">Title & Details</th>
                     <th className="py-3 px-3">Type</th>
                     <th className="py-3 px-3">Publication</th>
-                    <th className="py-3 px-3">Date</th>
+                    <th className="py-3 px-3">Date (M / D / Y)</th>
                     <th className="py-3 px-3 text-center">Chunks</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
@@ -189,20 +217,33 @@ export default function Documents() {
                       </td>
                     </tr>
                   ) : (
-                    documents.map((doc) => {
+                    documents.map((doc, idx) => {
                       const isSelected = selectedDoc?.id === doc.id;
+                      const isHighlighted = highlightDocId && parseInt(highlightDocId) === doc.id;
                       return (
                         <tr
                           key={doc.id}
-                          className={`hover:bg-zinc-800/60 transition-colors cursor-pointer ${
-                            isSelected ? 'bg-red-950/30 border-l-2 border-red-600 font-medium' : ''
+                          ref={isHighlighted ? highlightedRowRef : null}
+                          className={`hover:bg-zinc-800/60 transition-all cursor-pointer ${
+                            isHighlighted
+                              ? 'bg-red-950/40 border-l-4 border-red-500 ring-1 ring-red-500/30 font-medium'
+                              : isSelected
+                              ? 'bg-red-950/30 border-l-2 border-red-600 font-medium'
+                              : ''
                           }`}
                           onClick={() => handleViewChunks(doc)}
                         >
                           <td className="py-3 px-4 max-w-[280px]">
-                            <div className="font-semibold text-white line-clamp-1">{doc.title}</div>
+                            <div className="flex items-center gap-2">
+                              {isHighlighted && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider animate-pulse">
+                                  NEW
+                                </span>
+                              )}
+                              <div className="font-semibold text-white line-clamp-1">{doc.title}</div>
+                            </div>
                             {doc.author && (
-                              <div className="text-[11px] text-zinc-400 truncate">By {doc.author}</div>
+                              <div className="text-[11px] text-zinc-400 truncate mt-0.5">By {doc.author}</div>
                             )}
                           </td>
                           <td className="py-3 px-3 whitespace-nowrap">
@@ -213,8 +254,17 @@ export default function Documents() {
                           <td className="py-3 px-3 whitespace-nowrap text-zinc-400">
                             {doc.publication || 'Archive'}
                           </td>
-                          <td className="py-3 px-3 whitespace-nowrap font-mono text-zinc-400">
-                            {formatDate(doc.publication_date)}
+                          <td className="py-3 px-3 whitespace-nowrap font-mono text-zinc-300">
+                            <div className="flex flex-col">
+                              <span className="font-semibold text-zinc-200">
+                                {formatDate(doc.publication_date, doc.created_at)}
+                              </span>
+                              {doc.publication_date && doc.created_at && (
+                                <span className="text-[10px] text-zinc-500 font-sans">
+                                  Ingested {formatDate(doc.created_at)}
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className="py-3 px-3 text-center font-mono text-zinc-300">
                             {doc.chunk_count || 1}
@@ -223,14 +273,14 @@ export default function Documents() {
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => handleViewChunks(doc)}
-                                className="p-1 rounded text-zinc-400 hover:text-red-400 hover:bg-zinc-800 transition-colors cursor-pointer"
+                                className="p-1.5 rounded text-zinc-400 hover:text-red-400 hover:bg-zinc-800 transition-colors cursor-pointer"
                                 title="Inspect Chunks"
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => handleDelete(doc.id, doc.title)}
-                                className="p-1 rounded text-zinc-400 hover:text-red-400 hover:bg-red-950/50 transition-colors cursor-pointer"
+                                className="p-1.5 rounded text-zinc-400 hover:text-red-400 hover:bg-red-950/50 transition-colors cursor-pointer"
                                 title="Delete Document"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -250,17 +300,25 @@ export default function Documents() {
           {selectedDoc && (
             <div className="lg:col-span-5 bg-zinc-900 rounded-lg border border-zinc-800 shadow-xl p-5 space-y-4 max-h-[750px] overflow-y-auto text-zinc-100">
               <div className="flex items-start justify-between border-b border-zinc-800 pb-3">
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
-                    Document Chunks ({docChunks.length})
-                  </span>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
+                      Document Chunks ({docChunks.length})
+                    </span>
+                    <span className="text-[11px] font-mono text-zinc-400">
+                      • {formatDate(selectedDoc.publication_date, selectedDoc.created_at)}
+                    </span>
+                  </div>
                   <h4 className="text-sm font-bold text-white line-clamp-1">
                     {selectedDoc.title}
                   </h4>
+                  {selectedDoc.author && (
+                    <p className="text-xs text-zinc-400">By {selectedDoc.author} ({selectedDoc.publication || 'Archive'})</p>
+                  )}
                 </div>
                 <button
                   onClick={() => setSelectedDoc(null)}
-                  className="text-zinc-400 hover:text-white text-sm font-mono"
+                  className="text-zinc-400 hover:text-white text-sm font-mono p-1"
                 >
                   ×
                 </button>

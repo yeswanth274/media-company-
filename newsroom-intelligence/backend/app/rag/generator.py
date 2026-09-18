@@ -9,6 +9,7 @@ from app.llm.factory import get_llm_provider
 from app.database.models import AskResponse, ResearchBriefing, TimelineEvent, CitationItem, ConflictItem
 from app.database.repositories import QueryRepository, StoryRepository, ChunkRepository
 from app.utils.logging import logger
+from app.utils.text_utils import is_query_relevant
 
 class RAGGenerator:
     def __init__(self):
@@ -30,17 +31,17 @@ class RAGGenerator:
         # 2. Rerank
         reranked_chunks = reranker.rerank(question, retrieved_chunks)
 
-        # If no chunks found
-        if not reranked_chunks:
+        # If no chunks found or question is unrelated to archive evidence
+        if not reranked_chunks or not is_query_relevant(question, reranked_chunks):
             return AskResponse(
                 question=question,
-                answer="No reliable archive evidence was found for this question.",
+                answer=f"The archive evidence available is insufficient to answer '{question}' confidently, as no matching records were found in the indexed documents.",
                 evidence_level="insufficient",
                 key_evidence=[],
                 conflicts=[],
                 citations=[],
-                retrieved_count=0,
-                validation_status="no_evidence"
+                retrieved_count=len(reranked_chunks) if reranked_chunks else 0,
+                validation_status="valid"
             )
 
         # 3. Format Prompt
@@ -107,11 +108,11 @@ class RAGGenerator:
         retrieved_chunks = retriever.search(query=combined_query, top_k=15)
         reranked_chunks = reranker.rerank(combined_query, retrieved_chunks)
 
-        if not reranked_chunks:
+        if not reranked_chunks or not is_query_relevant(combined_query, reranked_chunks):
             return ResearchBriefing(
                 title=title,
                 research_question=research_question,
-                background="No archival records found matching this developing story topic.",
+                background=f"No archival records found matching '{title}' in the indexed documents.",
                 key_developments=[],
                 timeline=[],
                 key_people=[],

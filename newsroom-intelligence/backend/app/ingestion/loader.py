@@ -1,5 +1,6 @@
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 from app.utils.config import settings
@@ -50,24 +51,42 @@ class DocumentLoader:
         except Exception:
             stored_path = str(file_path)
 
-        # Merge metadata
-        doc_title = title or extracted.metadata.get("title") or path.stem
-        doc_author = author or extracted.metadata.get("author")
+        # Intelligent metadata resolution
+        doc_title = title
+        # If title is blank, generic, or just the filename, use extracted headline if available
+        if not doc_title or doc_title.lower().startswith("untitled") or doc_title == path.name:
+            doc_title = extracted.metadata.get("title") or title or path.stem.replace("_", " ").replace("-", " ").title()
+
+        doc_author = author or extracted.metadata.get("author") or ""
+        doc_publication = publication or extracted.metadata.get("publication") or "Archive"
+
+        # Date hierarchy: Explicit user input -> Extracted publication date from text -> Extracted metadata date -> File mod date -> Today
+        doc_date = (publication_date or "").strip()
+        if not doc_date:
+            doc_date = extracted.metadata.get("publication_date") or extracted.metadata.get("creation_date")
+        if not doc_date:
+            try:
+                doc_date = datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m-%d")
+            except Exception:
+                doc_date = datetime.now().strftime("%Y-%m-%d")
+
+        doc_location = location or extracted.metadata.get("location")
+
         doc_source_type = source_type or "article"
         if "interview" in doc_title.lower() or "interview" in path.name.lower():
             doc_source_type = "interview"
         elif "transcript" in doc_title.lower() or "transcript" in path.name.lower():
             doc_source_type = "transcript"
-        elif "footage" in doc_title.lower() or "notes" in path.name.lower():
+        elif "footage" in doc_title.lower() or "notes" in path.name.lower() or "tape" in path.name.lower():
             doc_source_type = "footage_note"
 
         doc_create = DocumentCreate(
             title=doc_title,
             source_type=doc_source_type,
-            publication=publication or "Archive",
+            publication=doc_publication,
             author=doc_author,
-            publication_date=publication_date or extracted.metadata.get("creation_date"),
-            location=location,
+            publication_date=doc_date,
+            location=doc_location,
             description=description,
             original_filename=path.name,
             original_path=stored_path
@@ -75,7 +94,7 @@ class DocumentLoader:
 
         # 2. Insert into SQLite documents table
         doc_id = DocumentRepository.create(doc_create)
-        logger.info(f"Ingested document record with ID {doc_id}: '{doc_title}'")
+        logger.info(f"Ingested document record with ID {doc_id}: '{doc_title}' (Date: {doc_date})")
 
         # 3. Semantic Chunking
         doc_meta_dict = doc_create.model_dump()

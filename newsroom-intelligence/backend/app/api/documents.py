@@ -63,6 +63,7 @@ def list_documents(
     source_type: Optional[str] = Query(None),
     publication: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query("newest_upload"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0)
 ):
@@ -70,6 +71,7 @@ def list_documents(
         source_type=source_type,
         publication=publication,
         search_term=search,
+        sort_by=sort_by or "newest_upload",
         limit=limit,
         offset=offset
     )

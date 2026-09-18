@@ -1,6 +1,7 @@
 import re
 from typing import List
 from app.database.models import SearchResultChunk
+from app.utils.text_utils import extract_content_terms
 
 class EvidenceReranker:
     @staticmethod
@@ -12,23 +13,26 @@ class EvidenceReranker:
         if not chunks or not query:
             return chunks
 
-        query_terms = set(re.findall(r"\b\w{3,}\b", query.lower()))
-        
+        query_terms = extract_content_terms(query)
+        years = re.findall(r"\b(19\d\d|20\d\d)\b", query)
+
         scored_chunks = []
         for chunk in chunks:
             boost = 0.0
-            text_lower = chunk.text.lower()
-            title_lower = chunk.title.lower()
+            text_lower = (chunk.text or "").lower()
+            title_lower = (chunk.title or "").lower()
+            combined_text = f"{title_lower} {text_lower}"
+            tokens = set(re.findall(r"[a-zA-Z0-9_\'-]+", combined_text))
 
             # Boost for year matches
-            years = re.findall(r"\b(19\d\d|20\d\d)\b", query)
             for y in years:
                 if y in text_lower or y in (chunk.date or ""):
                     boost += 0.08
 
-            # Term overlap boost
-            overlap = sum(1 for term in query_terms if term in text_lower or term in title_lower)
-            boost += (overlap * 0.02)
+            # Term overlap boost for genuine non-stopwords
+            if query_terms:
+                overlap = len(query_terms.intersection(tokens))
+                boost += (overlap * 0.05)
 
             new_score = chunk.score + boost
             chunk.score = round(min(new_score, 1.0), 4)

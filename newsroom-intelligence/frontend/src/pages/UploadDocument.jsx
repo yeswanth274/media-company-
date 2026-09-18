@@ -4,6 +4,7 @@ import { UploadCloud, FileText, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft
 import Header from '../components/Header';
 import UploadDropzone from '../components/UploadDropzone';
 import api from '../services/api';
+import { formatDate } from '../utils/formatters';
 
 export default function UploadDocument() {
   const [file, setFile] = useState(null);
@@ -28,6 +29,17 @@ export default function UploadDocument() {
       // Auto-populate title from filename
       const baseName = selected.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
       setTitle(baseName.charAt(0).toUpperCase() + baseName.slice(1));
+
+      // Auto-detect date/year from filename if present
+      const match = selected.name.match(/(19\d\d|20\d\d)[-_](0[1-9]|1[0-2])[-_](0[1-9]|[12]\d|3[01])/);
+      if (match) {
+        setPublicationDate(`${match[1]}-${match[2]}-${match[3]}`);
+      } else {
+        const yearMatch = selected.name.match(/\b(19\d\d|20\d\d)\b/);
+        if (yearMatch) {
+          setPublicationDate(`${yearMatch[1]}-01-01`);
+        }
+      }
     }
   };
 
@@ -100,8 +112,8 @@ export default function UploadDocument() {
                 <span className="font-medium text-zinc-300">{completedDoc.publication || 'Archive'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500">Publication Date:</span>
-                <span className="font-mono text-zinc-400">{completedDoc.publication_date || 'N/A'}</span>
+                <span className="text-zinc-500">Record Date (M / D / Y):</span>
+                <span className="font-mono text-zinc-300 font-semibold">{formatDate(completedDoc.publication_date, completedDoc.created_at)}</span>
               </div>
             </div>
 
@@ -110,16 +122,20 @@ export default function UploadDocument() {
                 onClick={() => {
                   setCompletedDoc(null);
                   setFile(null);
+                  setTitle('');
+                  setPublicationDate('');
+                  setAuthor('');
+                  setPublication('');
                 }}
                 className="px-4 py-2 text-xs font-semibold rounded-md border border-zinc-700 text-zinc-300 bg-zinc-800 hover:bg-zinc-750 cursor-pointer transition-colors"
               >
                 Upload Another Document
               </button>
               <button
-                onClick={() => navigate('/documents')}
+                onClick={() => navigate(`/documents?highlight=${completedDoc.id}`)}
                 className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-md bg-red-600 text-white hover:bg-red-500 cursor-pointer shadow-md shadow-red-950 transition-colors"
               >
-                <span>View Archive Documents</span>
+                <span>View in Archive Catalogue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -142,9 +158,14 @@ export default function UploadDocument() {
 
             {file && !processing && (
               <form onSubmit={handleUploadSubmit} className="space-y-4 pt-4 border-t border-zinc-800">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
-                  Archival Metadata Configuration
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                    Archival Metadata Configuration
+                  </h4>
+                  <span className="text-[11px] text-zinc-500">
+                    Auto-extracted if left blank
+                  </span>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -187,7 +208,7 @@ export default function UploadDocument() {
                       type="text"
                       value={publication}
                       onChange={(e) => setPublication(e.target.value)}
-                      placeholder="e.g. Metro Daily or City Record"
+                      placeholder="e.g. Metro Daily or City Record (auto-detected if blank)"
                       className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-600 placeholder-zinc-600"
                     />
                   </div>
@@ -200,7 +221,7 @@ export default function UploadDocument() {
                       type="text"
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
-                      placeholder="e.g. Sarah Jenkins"
+                      placeholder="e.g. Sarah Jenkins (auto-detected if blank)"
                       className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-600 placeholder-zinc-600"
                     />
                   </div>

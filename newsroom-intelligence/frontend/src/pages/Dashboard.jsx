@@ -194,7 +194,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 text-xs text-zinc-500 pt-1">
                       <span>{doc.publication || 'Archival record'}</span>
                       <span>•</span>
-                      <span>{formatDate(doc.publication_date)}</span>
+                      <span className="text-zinc-300 font-mono">{formatDate(doc.publication_date, doc.created_at)}</span>
                       <span>•</span>
                       <span className="font-mono">{doc.chunk_count || 1} chunks</span>
                     </div>

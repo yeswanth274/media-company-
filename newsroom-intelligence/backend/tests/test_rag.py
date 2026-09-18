@@ -20,4 +20,17 @@ def test_rag_insufficient_evidence_for_unrelated_query():
     question = "What was the score of the 1994 Martian football championship?"
     response = rag_generator.ask(question=question, top_k=5)
 
-    assert response.evidence_level in ["insufficient", "limited"]
+    assert response.evidence_level == "insufficient"
+    assert len(response.citations) == 0
+    assert len(response.key_evidence) == 0
+    assert "insufficient" in response.answer.lower()
+
+def test_rag_what_is_dsa_returns_insufficient_evidence():
+    init_database()
+    question = "what is dsa"
+    response = rag_generator.ask(question=question, top_k=5)
+
+    assert response.evidence_level == "insufficient"
+    assert len(response.citations) == 0
+    assert len(response.key_evidence) == 0
+    assert "insufficient" in response.answer.lower()

@@ -118,10 +118,13 @@ class CitationValidator:
                     ))
 
         # Adjust evidence level
-        if not validated_citations:
+        if not validated_citations or evidence_level == "insufficient" or "insufficient" in cleaned_answer.lower():
             evidence_level = "insufficient"
+            validated_citations = []
+            validated_key_evidence = []
+            validated_conflicts = []
             if not cleaned_answer or "insufficient" not in cleaned_answer.lower():
-                cleaned_answer = "The archive evidence available is insufficient to answer this confidently."
+                cleaned_answer = "The archive evidence available is insufficient to answer this confidently, as no matching records were found in the indexed documents."
 
         return {
             "answer": cleaned_answer.strip(),
