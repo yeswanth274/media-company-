@@ -35,7 +35,7 @@ class RAGGenerator:
         if not reranked_chunks or not is_query_relevant(question, reranked_chunks):
             return AskResponse(
                 question=question,
-                answer=f"The archive evidence available is insufficient to answer '{question}' confidently, as no matching records were found in the indexed documents.",
+                answer=f"The archival record contains no evidence regarding '{question}'. Newsroom Intelligence provides answers strictly grounded in indexed investigative archive documents.",
                 evidence_level="insufficient",
                 key_evidence=[],
                 conflicts=[],

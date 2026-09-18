@@ -23,7 +23,19 @@ STOP_WORDS: Set[str] = {
     "would", "wouldn't", "you", "you'd", "you'll", "you're", "you've", "your",
     "yours", "yourself", "yourselves", "tell", "show", "give", "explain", "detail",
     "details", "information", "info", "please", "said", "happened", "know", "find",
-    "list", "describe", "say", "says"
+    "list", "describe", "say", "says", "define", "meaning"
+}
+
+# Technical / coding / general computer science keywords that are not investigative archive questions
+TECH_KEYWORDS: Set[str] = {
+    "dsa", "leetcode", "quicksort", "mergesort", "binary search", "linked list",
+    "binary tree", "hashmap", "dynamic programming", "time complexity", "big o",
+    "recursion", "pointer", "oop", "polymorphism", "inheritance", "encapsulation",
+    "python code", "java code", "c++", "javascript", "react hook", "useeffect",
+    "sql query", "database normalization", "docker", "kubernetes", "rest api",
+    "html", "css", "machine learning", "deep learning", "neural network", "transformer model",
+    "gradient descent", "backpropagation", "sorting algorithm", "breadth first search",
+    "depth first search", "graph traversal", "stack queue", "heapsort"
 }
 
 def extract_content_terms(text: str) -> Set[str]:
@@ -35,15 +47,28 @@ def extract_content_terms(text: str) -> Set[str]:
     raw_words = re.findall(r"[a-zA-Z0-9_\'-]+", text.lower())
     return {w for w in raw_words if len(w) >= 2 and w not in STOP_WORDS}
 
-def is_query_relevant(query: str, chunks: List[Any], min_semantic_score: float = 0.22) -> bool:
+def is_query_relevant(query: str, chunks: List[Any]) -> bool:
     """
-    Determines if retrieved chunks possess sufficient relevance to answer the query.
-    Combines dense semantic similarity with exact content keyword matching.
+    Strictly verifies whether the query is relevant to indexed archive evidence.
+    Returns False for technical/coding questions, out-of-domain topics, or queries without evidence.
     """
     if not query or not query.strip() or not chunks:
         return False
 
+    q_lower = query.lower().strip()
+
+    # Check for general tech / coding terms
+    for tech_term in TECH_KEYWORDS:
+        if tech_term in q_lower:
+            # Check if this exact tech term is mentioned in the archive chunks
+            in_archive = any(tech_term in (getattr(c, "text", "") or "").lower() for c in chunks)
+            if not in_archive:
+                return False
+
     terms = extract_content_terms(query)
+    if not terms:
+        return False
+
     scores = [getattr(c, "score", 0.0) or 0.0 for c in chunks]
     max_score = max(scores) if scores else 0.0
 
@@ -62,18 +87,21 @@ def is_query_relevant(query: str, chunks: List[Any], min_semantic_score: float =
     matched_terms = terms.intersection(corpus_tokens) if terms else set()
     match_ratio = (len(matched_terms) / len(terms)) if terms else 0.0
 
+    # If zero key terms match any chunk text, it is completely irrelevant
+    if len(matched_terms) == 0:
+        return False
+
     # Relevance conditions:
-    # 1. Multiple key content terms (>= 2) match and score >= 0.10
-    if len(matched_terms) >= 2 and max_score >= 0.10:
+    # 1. Multiple key content terms (>= 2) match and score >= 0.12
+    if len(matched_terms) >= 2 and max_score >= 0.12:
         return True
 
-    # 2. At least one key term matches with high term coverage (>= 50%) and score >= 0.14
-    if len(matched_terms) >= 1 and match_ratio >= 0.50 and max_score >= 0.14:
+    # 2. At least one key term matches with high term coverage (>= 50%) and score >= 0.18
+    if len(matched_terms) >= 1 and match_ratio >= 0.50 and max_score >= 0.18:
         return True
 
-    # 3. High semantic similarity score (>= 0.28)
-    if max_score >= 0.28:
+    # 3. Very high semantic similarity score (>= 0.35)
+    if max_score >= 0.35 and len(matched_terms) >= 1:
         return True
 
-    # Otherwise, the query is deemed unrelated or insufficiently backed
     return False
