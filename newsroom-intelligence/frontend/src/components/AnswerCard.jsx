@@ -116,12 +116,27 @@ export default function AnswerCard({ response, onSelectCitation, onSelectSource 
 
       {/* Main Answer Narrative */}
       <div className="p-6 space-y-5 bg-zinc-900">
-        <div className="prose prose-invert max-w-none text-base font-serif leading-relaxed text-zinc-100">
-          {renderFormattedAnswer(answer)}
-        </div>
+        {evidence_level === 'insufficient' ? (
+          <div className="p-4 rounded-md bg-zinc-950 border border-zinc-800 text-zinc-300 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <span>No Verified Archive Record Found</span>
+            </div>
+            <p className="text-sm font-serif leading-relaxed text-zinc-200">
+              {answer}
+            </p>
+            <div className="pt-2 text-xs text-zinc-400 border-t border-zinc-800/80">
+              💡 <span className="font-semibold text-zinc-300">Journalistic Guidance:</span> Newsroom Intelligence only answers questions verified by indexed documents. Try searching for specific people (e.g. <em className="text-zinc-200">Alex Morgan</em>, <em className="text-zinc-200">Elena Rostova</em>), organizations (<em className="text-zinc-200">Northstar Technologies</em>), or historical events.
+            </div>
+          </div>
+        ) : (
+          <div className="prose prose-invert max-w-none text-base font-serif leading-relaxed text-zinc-100">
+            {renderFormattedAnswer(answer)}
+          </div>
+        )}
 
         {/* Key Evidence Points (if present) */}
-        {key_evidence && key_evidence.length > 0 && (
+        {evidence_level !== 'insufficient' && key_evidence && key_evidence.length > 0 && (
           <div className="pt-4 border-t border-zinc-800 space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
               Key Documented Facts
