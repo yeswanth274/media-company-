@@ -2,7 +2,14 @@
 
 > **AI-powered archival research with evidence-backed answers.**
 
-Newsroom Intelligence is a production-grade, evidence-first AI research assistant designed specifically for journalists and investigative teams. It indexes decades of historical articles, interview recordings, official meeting transcripts, court records, and reporter footage logs into a high-performance **SQLite + FAISS** vector database.
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![FAISS](https://img.shields.io/badge/Vector_DB-FAISS-blue?style=flat)](https://github.com/facebookresearch/faiss)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+Newsroom Intelligence is a production-grade, evidence-first AI research assistant designed specifically for journalists and investigative teams. It indexes decades of historical articles, interview recordings, official meeting transcripts, court records, and reporter footage logs into a high-performance **SQLite + FAISS** vector database with ONNX-accelerated FastEmbed embeddings.
 
 Unlike general consumer AI bots, Newsroom Intelligence operates on the fundamental principle that **the archival record is the single source of truth, and the LLM is solely a synthesis layer.**
 
@@ -96,7 +103,7 @@ newsroom-intelligence/
 │   │   │   └── chunker.py           # Semantic token-aware chunker
 │   │   │
 │   │   ├── embeddings/
-│   │   │   └── embedder.py          # SentenceTransformer with L2 norm
+│   │   │   └── embedder.py          # FastEmbed (ONNX) & SentenceTransformer fallback
 │   │   │
 │   │   ├── vectorstore/
 │   │   │   ├── faiss_store.py       # FAISS IndexFlatIP store & persistence
@@ -125,11 +132,13 @@ newsroom-intelligence/
 │   │   │
 │   │   └── utils/
 │   │       ├── config.py            # Pydantic Settings
-│   │       └── logging.py           # Structured logging
+│   │       ├── logging.py           # Structured logging
+│   │       └── text_utils.py        # Entity & timestamp normalization
 │   │
 │   ├── scripts/
 │   │   ├── init_db.py               # Initialize SQLite schema
 │   │   ├── seed_data.py             # Seed 12 sample archive documents
+│   │   ├── backfill_metadata.py     # Metadata backfill utility
 │   │   └── rebuild_index.py         # Reconstruct FAISS index from DB
 │   │
 │   ├── tests/
@@ -282,7 +291,7 @@ cd newsroom-intelligence/backend
 pytest tests/ -v
 ```
 
-All 10 unit and integration tests verify:
+All 11 unit and integration tests verify:
 - Semantic chunking boundaries, timestamp extraction, and metadata tagging
 - Text and HTML extractors and text cleaner normalization
 - Citation validator rejecting hallucinated citation IDs (`[S99]`) and enforcing database grounding
@@ -293,8 +302,11 @@ All 10 unit and integration tests verify:
 
 ## API Endpoints Reference
 
+Interactive OpenAPI Swagger UI is available at `http://localhost:8000/docs`.
+
 | Method | Endpoint | Description |
 |---|---|---|
+| `GET` | `/` | Operational status, app info & version metadata |
 | `GET` | `/health` | System health, FAISS vector count & active provider |
 | `GET` | `/statistics` | Archive analytics, chunk counts & recent queries |
 | `GET` | `/settings` | Current configuration & vector index state |
@@ -303,6 +315,7 @@ All 10 unit and integration tests verify:
 | `POST` | `/search` | Semantic and faceted search across archive chunks |
 | `POST` | `/research` | Generate investigative research briefing for stories |
 | `GET` | `/stories` | List saved developing stories |
+| `GET` | `/stories/{id}` | Retrieve specific developing story dossier |
 | `POST` | `/timeline` | Generate verified chronological milestone timeline |
 | `GET` | `/entity/research` | Entity mention count, associated docs & excerpts |
 | `GET` | `/documents` | List indexed archive documents with filters |
@@ -312,6 +325,7 @@ All 10 unit and integration tests verify:
 | `DELETE` | `/documents/{id}` | Delete document and rebuild vector index |
 | `POST` | `/documents/reindex` | Full reconstruction of FAISS index from SQLite |
 | `GET` | `/sources/{chunk_id}` | Get exact chunk + preceding & succeeding context |
+| `GET` | `/chunks/{chunk_id}/surrounding` | Get chunk with adjacent surrounding chunks |
 
 ---
 
