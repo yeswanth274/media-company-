@@ -28,14 +28,15 @@ STOP_WORDS: Set[str] = {
 
 # Technical / coding / general computer science keywords that are not investigative archive questions
 TECH_KEYWORDS: Set[str] = {
-    "dsa", "leetcode", "quicksort", "mergesort", "binary search", "linked list",
-    "binary tree", "hashmap", "dynamic programming", "time complexity", "big o",
-    "recursion", "pointer", "oop", "polymorphism", "inheritance", "encapsulation",
-    "python code", "java code", "c++", "javascript", "react hook", "useeffect",
-    "sql query", "database normalization", "docker", "kubernetes", "rest api",
-    "html", "css", "machine learning", "deep learning", "neural network", "transformer model",
-    "gradient descent", "backpropagation", "sorting algorithm", "breadth first search",
-    "depth first search", "graph traversal", "stack queue", "heapsort"
+    "dsa", "data structures", "algorithms", "leetcode", "quicksort", "mergesort",
+    "binary search", "linked list", "binary tree", "hashmap", "dynamic programming",
+    "time complexity", "big o", "recursion", "pointer", "oop", "polymorphism",
+    "inheritance", "encapsulation", "python code", "java code", "c++", "javascript",
+    "react", "react hook", "useeffect", "sql query", "database normalization",
+    "docker", "kubernetes", "rest api", "html", "css", "machine learning",
+    "deep learning", "neural network", "transformer model", "gradient descent",
+    "backpropagation", "sorting algorithm", "breadth first search", "depth first search",
+    "graph traversal", "stack queue", "heapsort", "coding", "programming", "software engineering"
 }
 
 def extract_content_terms(text: str) -> Set[str]:

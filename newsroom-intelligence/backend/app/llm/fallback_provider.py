@@ -29,7 +29,7 @@ class FallbackSynthesisProvider(LLMProvider):
         question = q_match.group(1).strip() if q_match else ""
 
         insufficient_response = {
-            "answer": f"The archival record contains no evidence regarding '{question}'. Newsroom Intelligence provides answers strictly grounded in indexed investigative archive documents.",
+            "answer": f"The archival record contains insufficient evidence regarding '{question}'. Newsroom Intelligence provides answers strictly grounded in indexed investigative archive documents.",
             "evidence_level": "insufficient",
             "key_evidence": [],
             "conflicts": [],
